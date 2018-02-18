@@ -1,3 +1,0 @@
-snmp_user: "svc_snmp"
-snmp_password: "PASSWORD"
-snmp_community: "PASSWORD"
