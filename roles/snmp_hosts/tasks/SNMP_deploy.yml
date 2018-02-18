@@ -1,0 +1,25 @@
+---
+
+- hosts: 192.168.1.17
+  become: True
+  become_method: sudo
+  vars_files:
+    - SNMP_vars.yml
+
+  tasks:
+    - name: Check net-snmp is installed
+      yum:
+        name: net-snmp
+        state: present
+
+    - name:
+      template:
+        src: snmpd.conf.j2 
+        dest: /etc/snmp/snmpd.conf
+
+    - name: Ensure snmpd is restarted and enabled on boot
+      service:
+        name: snmpd
+        state: restarted
+        enabled: yes
+
