@@ -1,0 +1,63 @@
+---
+- hosts: all
+  tasks:
+      - name: Install Fedora base packages
+        dnf: state=latest name={{ item }}
+        with_items:
+        - ovirt-guest-agent-common
+        - vim
+        when: >
+         ansible_distribution == 'Fedora'
+
+      - name: Install RHEL base packages
+        yum: state=latest name={{ item }}
+        with_items: 
+        - ovirt-guest-agent-common
+        - vim
+         
+        when: >
+         ansible_distribution == 'RedHat'
+         or
+         ansible_distribution == 'CentOS'
+
+      - name: Start oVirt Guest Agent
+        systemd:
+         state: started
+         enabled: yes
+         name: ovirt-guest-agent.service
+
+      - name: Copy SSH key to authorized keys
+        authorized_key:
+           user: root
+           state: present
+           key: "{{ lookup('file', '/home/shep/.ssh/id_rsa.pub') }}"
+
+      - name: Install Satellite6 rpm
+        yum:
+           name: http://172.30.0.110/pub/katello-ca-consumer-latest.noarch.rpm
+           state: present
+        when:
+           ansible_distribution == "CentOS"
+           or
+           ansible_distribution == "RedHat"
+
+      - name: Register CentOS to Sat6
+        redhat_subscription:
+           state: present
+           activationkey: CENTOS_7_AK
+           org_id: BNE-HOME
+           force_register: yes
+        
+        when: 
+           ansible_distribution == "CentOS"
+
+      - name:  Register RHEL to Satellite6
+        redhat_subscription:
+          state: present
+          activationkey: RHEL_7_AK
+          org_id: BNE-HOME
+
+
+        when: 
+          ansible_distribution == "RedHat"
+
