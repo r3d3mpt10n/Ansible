@@ -1,0 +1,7 @@
+---
+
+- name: Ensure chronyd is restarted and enabled on boot
+  systemd:
+    name: chronyd
+    state: restarted
+    enabled: yes

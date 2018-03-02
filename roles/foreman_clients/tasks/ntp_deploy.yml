@@ -1,0 +1,25 @@
+---
+
+- hosts: 192.168.1.17
+  become: True
+  become_method: sudo
+  vars_files:
+    - NTP_vars.yml
+
+  tasks:
+    - name: Check net-snmp is installed
+      yum:
+        name: chronyd
+        state: present
+
+    - name:
+      template:
+        src: chronyd.conf.j2 
+        dest: /etc/chrony.conf
+
+    - name: Ensure snmpd is restarted and enabled on boot
+      service:
+        name: chronyd
+        state: restarted
+        enabled: yes
+

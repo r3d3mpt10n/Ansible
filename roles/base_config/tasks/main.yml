@@ -1,0 +1,59 @@
+---
+
+- name: Add Ansible user
+  user:
+      name: ansible
+      group: wheel
+      system: yes
+      comment: "Ansible Management User"
+
+- name: Check SSH key is in authorized_keys
+  authorized_key:
+      user: ansible
+      state: present
+      key: "{{ ssh_key }}"
+
+- name: Install Foreman RPM
+  yum:
+      name: http://{{ foreman_host }}/pub/katello-ca-consumer-latest.noarch.rpm
+      state: present
+
+- name: Register with Foreman
+  redhat_subscription:
+      state: present
+      activationkey: "{{ foreman_act_key }}"
+      pool_ids:
+              - ff80808160c690520160c8423d240076
+              - ff80808160c690520160c6c77e860066
+
+- name: Install Packages
+  yum:
+      name: "{{ item }}"
+      state: present
+  with_items:
+      - katello-agent
+      - vim
+      - bash-completion
+      - bind-utils
+      - ipa-client
+
+- name: Install Zabbix-agent
+  yum:
+      name: zabbix-agent
+      state: present
+      disable_gpg_check: yes
+  notify: Start Zabbix-agent
+
+- name: Install oVirt Guest Agent
+  yum: name=ovirt-guest-agent state=present
+  notify: Start ovirt-guest-agent
+
+                      
+- name: Join domain
+  template:
+      src: templates/sssd.conf.j2
+      dest: /etc/sssd/sssd.conf
+      owner: root
+      group: root
+      mode: 0600
+  notify: Restart sssd

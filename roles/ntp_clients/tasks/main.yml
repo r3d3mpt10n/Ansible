@@ -10,9 +10,3 @@
     src: templates/chrony.conf.j2
     dest: /etc/chrony.conf
 
-- name: Ensure chronyd is restarted and enabled on boot
-  systemd:
-    name: chronyd
-    state: restarted
-    enabled: yes
-

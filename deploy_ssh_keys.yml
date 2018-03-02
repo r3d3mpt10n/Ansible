@@ -1,5 +1,5 @@
 ---
-- hosts: all 
+- hosts: Infra
   tasks:
           - name: Set Authorized Keys
             authorized_key:

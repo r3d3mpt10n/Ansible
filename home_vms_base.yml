@@ -1,5 +1,8 @@
 ---
-- hosts: all
+- hosts: Infra
+  roles:
+      - roles/ntp_clients
+      - roles/snmp_hosts
   tasks:
       - name: Install Fedora base packages
         dnf: state=latest name={{ item }}

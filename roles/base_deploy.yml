@@ -1,14 +1,17 @@
 ---
 
-- hosts: Infra
+- hosts: VMs
   become: True
   become_method: sudo
   vars_files:
+    - base_config/vars/main.yml
     - ntp_clients/vars/NTP_vars.yml
     - snmp_hosts/vars/SNMP_vars.yml
     - zabbix_clients/vars/main.yml
   roles:
+    - base_config
     - ntp_clients
     - snmp_hosts
     - zabbix_clients
+    
 

@@ -1,0 +1,13 @@
+---
+
+- hosts: localhost
+  become: yes
+  become_method: sudo
+
+  tasks:
+          - name: Check SNMP user
+            shell: egrep -v '^#|^$' /etc/snmp/snmpd.conf
+            register: snmp_check
+
+          - debug: msg="{{ snmp_check.stdout }}"
+          - debug: msg="{{ snmp_check.stderr }}"
