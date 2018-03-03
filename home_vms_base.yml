@@ -1,5 +1,5 @@
 ---
-- hosts: "{{ host_groups }}"
+- hosts: "{{ host_group }}"
   roles:
       - roles/ntp_clients
       - roles/snmp_hosts
