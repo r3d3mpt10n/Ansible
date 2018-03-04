@@ -1,3 +1,4 @@
-awx.bne-home.net
-docker.bne-home.net
+bne-server1.bne-home.net
+haproxy.bne-home.net
+squid1.bne-home.net
 zabbix.bne-home.net

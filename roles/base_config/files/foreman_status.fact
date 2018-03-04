@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+STATUS=$(subscription-manager status | grep 'Overall Status' | cut -d ':' -f 2)
+
+echo "{\"foreman_state\" : \"${STATUS}\"}"
+

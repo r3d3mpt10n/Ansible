@@ -1,5 +1,6 @@
 ---
-- hosts: "{{ host_group }}"
+#- hosts: "{{ host_group }}"
+- hosts: Infra
   roles:
       - roles/ntp_clients
       - roles/snmp_hosts

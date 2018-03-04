@@ -7,6 +7,17 @@
       system: yes
       comment: "Ansible Management User"
 
+- name: Ensure Custom fact directory exists
+  file:
+      path: /etc/ansible/facts.d/
+      state: directory
+
+- name: Add custom fact file
+  copy:
+      src: files/foreman_status.fact
+      dest: /etc/ansible/facts.d/foreman_status.fact
+      mode: 0755
+
 - name: Check SSH key is in authorized_keys
   authorized_key:
       user: ansible
@@ -21,10 +32,13 @@
 - name: Register with Foreman
   redhat_subscription:
       state: present
+      org_id: "{{ foreman_org }}"
       activationkey: "{{ foreman_act_key }}"
       pool_ids:
               - ff80808160c690520160c8423d240076
               - ff80808160c690520160c6c77e860066
+  when:
+        -  ansible_local.foreman_status != 'Current' 
 
 - name: Install Packages
   yum:
@@ -49,11 +63,11 @@
   notify: Start ovirt-guest-agent
 
                       
-- name: Join domain
-  template:
-      src: templates/sssd.conf.j2
-      dest: /etc/sssd/sssd.conf
-      owner: root
-      group: root
-      mode: 0600
-  notify: Restart sssd
+  #- name: Join domain
+  #  template:
+  #      src: templates/sssd.conf.j2
+  #      dest: /etc/sssd/sssd.conf
+  #      owner: root
+  #      group: root
+  #      mode: 0600
+  #  notify: Restart sssd
