@@ -1,2 +1,2 @@
-zabbix_server: "172.30.0.240"
-foreman_password: "PASSWORD"
+---
+# vars file for foreman_clients
