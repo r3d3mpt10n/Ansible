@@ -1,0 +1,6 @@
+ansible_user: root
+domain_controller: ipa-server.bne-home.net
+foreman_host: foreman.bne-home.net
+foreman_org: Default_Organization
+foreman_act_key: BNE-HOME_INFRA_AK
+ssh_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCyBKWP5c5bCJC1TuNWp3fY+8CUx0/7FM6OOFRZBOi4a50B0WLndixWyI0V+VOr4s/Id/k/pIfiuhVqng6QYm5CttGeEbvebXtMTq1rRBmgwjGTm2p3KUQ538zgNtJ3koInEbDXzmCK6/TlA7mWsk4j44PTiokVtnHKvGwgT49S8sWfa6WfwPIbe98d0bSdRF8t5bWk+4FvNO5oKMgnJba+rX5dPNfeRGeul4No9VwtRLd3iLAs4smte+Ut7V7U0CsgCAnILiE1CbFhhHXV6dgXs8YL/p7P3F3hrCSC9VhIc4VjaJto/XejyGKKWvUEeej6L5I7pBg6JldpQ3qgvR2f

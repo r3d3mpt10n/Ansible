@@ -1,0 +1,3 @@
+snmp_user: "svc_snmp"
+snmp_password: "Falc2oln"
+snmp_community: "Falc2oln"

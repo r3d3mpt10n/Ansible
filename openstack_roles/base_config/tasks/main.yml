@@ -28,10 +28,8 @@
   yum:
       name: http://{{ foreman_host }}/pub/katello-ca-consumer-latest.noarch.rpm
       state: present
-
   tags:
-       - satellite
-
+        - satellite
 
 - name: Register with Foreman
   redhat_subscription:
@@ -44,20 +42,17 @@
   when:
         -  ansible_local.foreman_status != 'Current' 
 
-
   tags:
-       - satellite
+        - satellite
 
 - name: Install Packages
   yum:
       name: "{{ item }}"
       state: present
   with_items:
-      - katello-agent
       - vim
       - bash-completion
       - bind-utils
-      - ipa-client
 
 - name: Install Zabbix-agent
   yum:
@@ -70,5 +65,5 @@
   yum: name=ovirt-guest-agent state=present
   notify: Start ovirt-guest-agent
   tags:
-       - ovirt
+        - ovirt
                       

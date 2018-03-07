@@ -8,9 +8,8 @@
     password: "{{ foreman_password }}"
     pool_ids:
         - ff80808160c690520160c6c77e860066
-
   tags:
-       - satellite
+        - satellite
 
 - name: Check zabbix is installed
   yum:
