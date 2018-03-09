@@ -5,6 +5,8 @@
       name: ansible
       group: wheel
       system: yes
+      update_password: always
+      password: "{{ user_password }}"
       comment: "Ansible Management User"
 
 - name: Ensure Custom fact directory exists
@@ -41,6 +43,7 @@
       pool_ids:
               - ff80808160c690520160c8423d240076
               - ff80808160c690520160c6c77e860066
+              - ff808081617e2e5c0161a72e5f94006f
   when:
         -  ansible_local.foreman_status != 'Current' 
 

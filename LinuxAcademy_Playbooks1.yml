@@ -1,0 +1,14 @@
+---
+
+- hosts: docker.bne-home.net
+  become: yes
+  tasks:
+          - name: Install packages using loop
+            yum:
+                    name: "{{ item }}"
+                    state: absent
+            with_items:
+                    - httpd
+                    - php
+                    - php-mysql
+                    

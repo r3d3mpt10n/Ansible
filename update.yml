@@ -1,21 +1,21 @@
 - hosts: all
-  sudo: yes
+  become: yes
   tasks:
   - name: RHEL System upgrade
-    yum: > 
-            update_cache=yes
-            name=*
-            state=latest
-    when: >
-            ansible_distribution == 'CentOS'
-            or
-            ansible_distribution == 'RedHat'
+    yum: 
+       update_cache=yes
+       name=*
+       state=latest
+    when:
+       ansible_distribution == 'CentOS'
+       or
+       ansible_distribution == 'RedHat'
   - name: Fedora Update
-    dnf: >
-            name=*
-            state=latest
-    when: >
-            ansible_distribution == 'Fedora'
+    dnf:
+       name=*
+       state=latest
+    when:
+       ansible_distribution == 'Fedora'
 
                     
 

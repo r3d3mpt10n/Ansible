@@ -4,6 +4,8 @@
   user:
       name: ansible
       group: wheel
+      update_password: always
+      password: "{{ user_password }}"
       system: yes
       comment: "Ansible Management User"
 
@@ -60,7 +62,9 @@
       state: present
       disable_gpg_check: yes
   notify: Start Zabbix-agent
-
+  tags:
+        - satellite
+  
 - name: Install oVirt Guest Agent
   yum: name=ovirt-guest-agent state=present
   notify: Start ovirt-guest-agent
