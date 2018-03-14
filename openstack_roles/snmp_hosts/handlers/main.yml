@@ -1,3 +1,5 @@
+---
+
 - name: Restart snmpd
   systemd:
       name: snmpd
