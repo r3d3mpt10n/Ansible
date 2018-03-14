@@ -9,10 +9,5 @@
   template:
     src: templates/snmpd.conf.j2
     dest: /etc/snmp/snmpd.conf
-
-- name: Ensure snmpd is restarted and enabled on boot
-  service:
-    name: snmpd
-    state: restarted
-    enabled: yes
+  notify: Restart snmpd
 
