@@ -1,0 +1,560 @@
+
+****************************************************************************************
+
+	This is a Private System. Unauthorised access is strictly prohibited.
+
+
+****************************************************************************************
+
+Building configuration...
+
+Current configuration : 17326 bytes
+!
+! Last configuration change at 00:45:33 UTC Tue Mar 20 2018 by noon
+!
+version 15.4
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname bne-r1
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable password 7 09585B504F240E4459
+!
+aaa new-model
+!
+!
+aaa authentication login default group radius local
+aaa authentication login ipsec local
+aaa authorization network ipsec local 
+!
+!
+!
+!
+!
+aaa session-id common
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+
+
+!
+ip dhcp excluded-address 192.168.1.6
+ip dhcp excluded-address 192.168.1.20
+ip dhcp excluded-address 192.168.1.50
+ip dhcp excluded-address 192.168.1.100
+!
+!
+!
+ip domain name bne-home.net
+ip host bne-server2 192.168.1.206
+ip name-server 8.8.8.8
+ip name-server 8.8.4.4
+ip inspect name home tcp
+ip inspect name home udp
+ip inspect name home icmp
+ip inspect name home pptp
+ip cef
+ipv6 unicast-routing
+ipv6 cef
+kerberos local-realm BNE-HOME.NET
+kerberos server BNE-HOME.NET 172.30.0.220
+kerberos credentials forward
+!
+multilink bundle-name authenticated
+!
+vpdn enable
+!
+vpdn-group 1
+ ! Default L2TP VPDN group
+ ! Default PPTP VPDN group
+ accept-dialin
+  protocol any
+  virtual-template 2
+!
+!
+chat-script hspa-R7 "" "AT!SCACT=1,1" TIMEOUT 60 "OK"
+password encryption aes
+cts logging verbose
+!
+crypto pki trustpoint TP-self-signed-1061565332
+ enrollment selfsigned
+ subject-name cn=IOS-Self-Signed-Certificate-1061565332
+ revocation-check none
+ rsakeypair TP-self-signed-1061565332
+!
+!
+crypto pki certificate chain TP-self-signed-1061565332
+ certificate self-signed 01
+  3082024F 308201B8 A0030201 02020101 300D0609 2A864886 F70D0101 04050030 
+  31312F30 2D060355 04031326 494F532D 53656C66 2D536967 6E65642D 43657274 
+  69666963 6174652D 33363637 33333039 3338301E 170D3130 31323037 31333435 
+  31325A17 0D323030 31303130 30303030 305A3031 312F302D 06035504 03132649 
+  4F532D53 656C662D 5369676E 65642D43 65727469 66696361 74652D33 36363733 
+  33303933 3830819F 300D0609 2A864886 F70D0101 01050003 818D0030 81890281 
+  8100A91C D33FCBC1 846D6A5D 9B446CD1 6EA9994A 3B28FB99 581E48D7 EA411B7A 
+  9A7EBADC 5BABDF25 0ACCF0CD E1D71B4A 9627607D 0400614E CA5F3730 CD0E5DFE 
+  47CA8049 2475A4E4 E260B29D 85ED5B2D EF8494D4 1B7E72A5 78983B32 205F0AED 
+  39447C02 7B527EBE F1F0CA7D 184DBAB0 E596EB80 79BB0DFA 789DCE10 49A830AC 
+  F0530203 010001A3 77307530 0F060355 1D130101 FF040530 030101FF 30220603 
+  551D1104 1B301982 17796F75 726E616D 652E796F 7572646F 6D61696E 2E636F6D 
+  301F0603 551D2304 18301680 14322146 2DAF4520 035CB0DF FB724C56 42218DF8 
+  68301D06 03551D0E 04160414 3221462D AF452003 5CB0DFFB 724C5642 218DF868 
+  300D0609 2A864886 F70D0101 04050003 8181006C C3B0A11E 3A0F1CB2 693C02D2 
+  26BC1414 7EEAFA9B BF035843 A3BDD8AC DFB04E69 4830F0F7 CF1B55A2 61003EB8 
+  E2545823 6A362B68 447E66EA 5D3B3F8C C2C228AE 42484D5E 5A3064C5 668D4B7D 
+  807E6F10 DC1E1336 9B35E174 790BD6B5 9A18BF28 4E4281C9 7F8E5277 9CA58A5B 
+  90D46603 4F3A69B5 6F1A6D21 D01692B5 4CADBC
+  	quit
+license udi pid CISCO1941/K9 sn FHK145072NQ
+license accept end user agreement
+license boot module c1900 technology-package securityk9
+license boot module c1900 technology-package datak9
+!
+!
+username Noon privilege 15 password 7 14341D1D5F363E04346C
+username shep password 7 083559175F381C4140
+!
+redundancy
+!
+!
+!
+!
+!
+controller Cellular 0/0
+!
+! 
+!
+crypto isakmp policy 1
+ encr 3des
+ hash md5
+ authentication pre-share
+ group 2
+ lifetime 480
+!
+crypto isakmp client configuration group ipsec
+ dns 8.8.8.8
+ domain r3d3mpt10n.com
+!
+crypto ipsec security-association lifetime seconds 86400
+!
+crypto ipsec transform-set vpn1 esp-3des esp-sha-hmac 
+ mode tunnel
+!
+!
+!
+crypto dynamic-map ipsec_map 1
+ set transform-set vpn1 
+ reverse-route
+!
+!
+crypto map static-map 1 ipsec-isakmp dynamic ipsec_map 
+!
+!
+!
+!
+!
+interface Loopback1
+ ip address 172.0.0.1 255.255.255.0
+ ip nat inside
+ ip virtual-reassembly in
+!
+interface Loopback2
+ no ip address
+ ip nat inside
+ ip virtual-reassembly in
+!
+interface Tunnel0
+ description Hurricane Electric IPv6 Tunnel Broker
+ no ip address
+ shutdown
+ ipv6 address 2001:470:C:7EB::2/64
+ ipv6 enable
+ tunnel source 121.208.90.5
+ tunnel mode ipv6ip
+ tunnel destination 66.220.18.42
+!
+interface Tunnel1
+ ip address 172.10.0.1 255.255.255.255
+ tunnel source GigabitEthernet0/0
+ tunnel destination 121.208.90.5
+ crypto map static-map
+!
+interface Embedded-Service-Engine0/0
+ no ip address
+ shutdown
+!
+interface GigabitEthernet0/0
+ ip address dhcp
+ ip access-group 110 in
+ ip nbar protocol-discovery
+ ip nat outside
+ ip inspect home in
+ ip inspect home out
+ ip virtual-reassembly in
+ duplex auto
+ speed auto
+ ipv6 traffic-filter HOME_SEC in
+ ipv6 traffic-filter HOME_SEC out
+ crypto map static-map
+!
+interface GigabitEthernet0/1
+ no ip address
+ ip virtual-reassembly in
+ ip virtual-reassembly out
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/1.1
+ encapsulation dot1Q 1 native
+ ip address 192.168.1.254 255.255.255.0
+ ip nbar protocol-discovery
+ ip nat inside
+ ip virtual-reassembly in
+ ip virtual-reassembly out
+!
+interface GigabitEthernet0/1.2
+ encapsulation dot1Q 2
+ ip address 192.168.2.254 255.255.255.0
+ ip nbar protocol-discovery
+ ip nat inside
+ ip virtual-reassembly in
+ ip virtual-reassembly out
+!
+interface GigabitEthernet0/1.3
+ encapsulation dot1Q 5
+ ip address 172.30.0.254 255.255.0.0
+ ip nbar protocol-discovery
+ ip nat inside
+ ip virtual-reassembly in
+ ip virtual-reassembly out
+!
+interface GigabitEthernet0/1.4
+ encapsulation dot1Q 4
+ ip address 172.40.0.254 255.255.0.0
+ ip nat inside
+ ip virtual-reassembly in
+!
+interface GigabitEthernet0/1.7
+ encapsulation dot1Q 7
+ ip address 172.70.0.254 255.255.0.0
+ ip nat inside
+ ip virtual-reassembly in
+!
+interface Cellular0/0/0
+ no ip address
+ encapsulation slip
+ dialer in-band
+ dialer string hspa-R7
+!
+interface Cellular0/0/1
+ no ip address
+ encapsulation slip
+!
+interface Virtual-Template2
+ no ip address
+ no ip redirects
+ no ip unreachables
+ ip nat inside
+ ip virtual-reassembly in
+ peer default ip address pool pptp
+ no keepalive
+ ppp encrypt mppe 128
+ ppp authentication ms-chap ms-chap-v2
+!
+ip local pool pptp 192.168.2.10 192.168.2.30
+ip kerberos source-interface GigabitEthernet0/1.3
+ip forward-protocol nd
+!
+no ip http server
+no ip http secure-server
+!
+ip dns server
+ip nat inside source list NAT_INBOUND interface GigabitEthernet0/0 overload
+ip nat inside source static tcp 192.168.1.6 21 interface GigabitEthernet0/0 21
+ip nat inside source static tcp 192.168.1.6 20 interface GigabitEthernet0/0 20
+ip nat inside source static tcp 172.0.0.1 22 interface GigabitEthernet0/0 3222
+ip nat inside source static tcp 192.168.1.6 636 interface GigabitEthernet0/0 636
+ip nat inside source static tcp 192.168.1.6 3389 interface GigabitEthernet0/0 3389
+ip nat inside source static tcp 192.168.1.6 9090 interface GigabitEthernet0/0 9090
+ip nat inside source static tcp 192.168.1.6 22 interface GigabitEthernet0/0 12022
+ip nat inside source static esp 172.40.0.253 interface GigabitEthernet0/0
+ip nat inside source static tcp 172.30.0.240 10051 interface GigabitEthernet0/0 10051
+ip nat inside source static tcp 172.30.0.110 80 interface GigabitEthernet0/0 80
+ip nat inside source static tcp 172.30.0.240 443 interface GigabitEthernet0/0 443
+ip nat inside source static tcp 172.70.0.110 1025 interface GigabitEthernet0/0 25
+ip nat inside source static tcp 172.30.0.50 12122 interface GigabitEthernet0/0 12122
+ip nat inside source static udp 172.30.0.50 1194 interface GigabitEthernet0/0 1194
+ip nat inside source static tcp 172.30.0.50 22 interface GigabitEthernet0/0 10022
+ip route 172.20.0.0 255.255.0.0 192.168.1.206
+ip route 192.168.100.0 255.255.255.0 GigabitEthernet0/0
+ip route 192.168.124.0 255.255.255.0 192.168.1.6
+ip route 192.168.124.0 255.255.255.0 192.168.124.1
+ip route 0.0.0.0 0.0.0.0 dhcp
+ip ssh version 2
+ip ssh pubkey-chain
+  username noon
+   key-hash ssh-rsa CC82C80551A0D84F1984DD6581B29870 
+   key-hash ssh-rsa 92256E1540ADB75DB4E7E9367285BD35 
+ip scp server enable
+!
+ip access-list standard NAT_INBOUND
+ permit 192.168.1.0 0.0.0.255
+ permit 172.30.0.0 0.0.255.255
+ permit 172.70.0.0 0.0.255.255
+ permit 172.40.0.0 0.0.255.255
+!
+ip access-list extended FACETIME
+ip access-list extended OUT_ALLOW
+ permit tcp any any
+ permit udp any any
+ip access-list extended STEAM
+ permit udp any range 27000 27015 any
+ permit udp any range 27000 27030 any
+ permit tcp any range 27014 27050 any
+ permit tcp any range 27036 27037 any
+ permit udp any range 27031 27036 any
+ permit udp any any eq 4380
+ip access-list extended ipsec
+ permit gre host 172.10.0.1 host 121.208.90.5
+!
+logging trap errors
+logging host 192.168.1.6 xml
+ipv6 route ::/0 Tunnel0
+!
+!
+snmp-server group groupone v3 priv 
+snmp-server community tu96Ay62 RW
+snmp-server community BNE-HOME RO
+snmp-server community public RO
+access-list 100 permit tcp any any eq 88 log
+access-list 100 deny   ip any any log
+access-list 100 deny   ip any host 129.250.35.251
+access-list 100 deny   udp any host 129.250.35.251 eq ntp
+access-list 110 remark 40 STEAM PORTS
+access-list 110 permit udp any eq bootpc any
+access-list 110 permit tcp any any eq 1723
+access-list 110 deny   tcp any any eq 22
+access-list 110 permit tcp any any eq 9090
+access-list 110 permit udp any any eq bootpc
+access-list 110 deny   ip 127.0.0.0 0.255.255.255 any
+access-list 110 permit tcp any any eq 146
+access-list 110 permit tcp any any eq 1080
+access-list 110 deny   ip 10.0.0.0 0.255.255.255 any
+access-list 110 permit tcp any eq 9988 any
+access-list 110 permit 41 any any
+access-list 110 permit tcp any any eq 1935
+access-list 110 permit tcp any any eq 12122
+access-list 110 permit tcp host 150.207.135.170 any eq 10051
+access-list 110 permit tcp host 150.207.135.170 any eq 10022
+access-list 110 permit tcp host 49.255.177.222 any eq 10051
+access-list 110 permit tcp host 49.255.177.222 any eq 10022
+access-list 110 permit tcp any any range 3478 3480
+access-list 110 permit tcp any any eq 1194
+access-list 110 permit udp any any eq 1194
+access-list 110 permit udp any any eq non500-isakmp
+access-list 110 permit udp any any eq isakmp
+access-list 110 permit udp any any range 3478 3479
+access-list 110 permit udp any any eq 3659
+access-list 110 permit udp any any eq 51577
+access-list 110 permit udp any any eq 5060
+access-list 110 permit udp any any eq 53037
+access-list 110 permit tcp any eq 17502 any
+access-list 110 permit tcp any range 20000 20100 any
+access-list 110 permit tcp any eq 22990 any
+access-list 110 permit tcp any eq 42127 any
+access-list 110 permit udp any range 14000 14016 any
+access-list 110 permit udp any eq 3659 any
+access-list 110 permit udp any range 22990 23006 any
+access-list 110 permit udp any range 25200 25300 any
+access-list 110 permit tcp any eq 3544 any
+access-list 110 permit tcp any eq 34117 any
+access-list 110 permit tcp any range 50000 59999 any
+access-list 110 permit udp any range 50020 50059 any
+access-list 110 permit tcp any eq 444 any
+access-list 110 permit tcp any eq 5061 any
+access-list 110 permit udp any eq 3478 any
+access-list 110 permit udp any range 50020 50039 any range 50000 59999
+access-list 110 permit tcp any range 50020 50039 any range 50000 59999
+access-list 110 permit tcp any range 50040 50059 any range 50000 59999
+access-list 110 permit udp any range 27000 27030 any
+access-list 110 permit tcp any range 27014 27050 any
+access-list 110 permit udp any range 27036 27037 any
+access-list 110 permit udp any eq 4380 any
+access-list 110 permit udp any eq 21001 any
+access-list 110 permit udp any eq 10070 any
+access-list 110 permit udp any range 3478 3479 any
+access-list 110 permit udp any eq 3658 any
+access-list 110 permit udp any any eq 1114
+access-list 110 permit udp any any eq 1112
+access-list 110 permit udp any any eq 1113
+access-list 110 permit udp any range 50000 60000 any
+access-list 110 permit tcp any range 10040 10060 any
+access-list 110 permit udp any any range 27000 27036
+access-list 110 permit tcp any any eq 54213
+access-list 110 permit udp any any eq 8888
+access-list 110 permit udp any any eq 3544
+access-list 110 permit udp any any eq 16385
+access-list 110 permit udp any any eq 16387
+access-list 110 permit udp any any eq 27019
+access-list 110 permit udp any any eq 61676
+access-list 110 permit udp any any eq 63972
+access-list 110 permit tcp any any eq smtp
+access-list 110 permit udp any any eq 65465
+access-list 110 permit udp any any eq 49430
+access-list 110 permit udp any any eq 3074
+access-list 110 permit udp any any eq 62889
+access-list 110 permit udp any any eq 16403
+access-list 110 permit udp any any range 16384 16387
+access-list 110 permit udp any any range 16393 16402
+access-list 110 permit udp any any range 3478 3497
+access-list 110 permit tcp any any range 27014 27050
+access-list 110 permit udp any any eq 51413
+access-list 110 permit tcp any any eq 51413
+access-list 110 permit udp any any eq 4380
+access-list 110 permit udp any any eq 27017
+access-list 110 permit tcp any any eq 5223
+access-list 110 permit tcp any any eq 10070
+access-list 110 permit tcp any any eq 10080
+access-list 110 permit udp any any eq 3658
+access-list 110 permit udp any any eq 10070
+access-list 110 permit tcp any any eq 3389
+access-list 110 permit tcp any any eq 3478
+access-list 110 permit tcp any any eq 3479
+access-list 110 permit tcp any any eq 3480
+access-list 110 permit udp any any eq 3478
+access-list 110 permit udp any any eq 3479
+access-list 110 permit tcp any any eq 9308
+access-list 110 permit gre any any
+access-list 110 permit tcp any any eq www
+access-list 110 permit tcp any any eq 443
+access-list 110 permit tcp any any eq 69
+access-list 110 permit tcp any any eq ftp-data
+access-list 110 permit tcp any any eq ftp
+access-list 110 permit tcp any any eq 12022 log
+access-list 110 permit tcp any any eq 3222
+access-list 110 permit tcp any any eq 12080
+access-list 110 permit icmp any any administratively-prohibited
+access-list 110 permit icmp any any echo
+access-list 110 permit icmp any any echo-reply
+access-list 110 permit icmp any any time-exceeded
+access-list 110 permit icmp any any traceroute
+access-list 110 permit tcp any any established
+access-list 110 permit udp any eq domain any
+access-list 110 permit udp any eq ntp any
+access-list 110 permit tcp any any eq 636
+access-list 110 permit udp any any eq 88
+access-list 110 deny   ip any any log
+!
+radius server bne-home
+ address ipv4 172.30.0.220 auth-port 1812 acct-port 1813
+ non-standard
+ key 7 071B34151828005345
+!
+!
+ldap server ipa-server
+ ipv4 172.30.0.220
+!
+!
+ipv6 access-list HOME_SEC
+ deny ipv6 host :: any
+ deny ipv6 host ::1 any log
+ deny ipv6 ::FFFF:0.0.0.0/96 any
+ deny ipv6 ::/96 any
+ deny ipv6 FEC0::/10 any
+ deny ipv6 FC00::/7 any
+ deny ipv6 2002:E000::/20 any
+ deny ipv6 2002:7F00::/24 any
+ deny ipv6 2002::/24 any
+ deny ipv6 2002:FF00::/24 any
+ deny ipv6 2002:A00::/24 any
+ deny ipv6 2002:AC10::/28 any
+ deny ipv6 2002:C0A8::/32 any
+ deny ipv6 3FFE::/16 any
+ deny ipv6 any any undetermined-transport
+ deny ipv6 any any fragments
+ deny icmp any any router-advertisement
+ permit icmp any any echo-reply
+ sequence 185 permit icmp any any unreachable
+ sequence 190 permit icmp any any echo-request
+ permit icmp any any time-exceeded
+ permit icmp any any no-route
+ permit icmp any any hop-limit
+ permit icmp any any destination-unreachable
+ permit icmp any any port-unreachable
+ permit tcp any any gt 1023 established
+ permit udp any any gt 1023
+ permit tcp any eq www any gt 1023
+ sequence 273 permit tcp host 2401:1C00:2040:418::100 any range 5900 5910
+ sequence 274 permit tcp host 2401:1C00:2040:418::100 any eq 3389
+ sequence 280 permit tcp any eq 443 any gt 1023
+ permit tcp any eq smtp any gt 1023
+ permit tcp any eq pop3 any gt 1023
+ sequence 302 permit tcp host 2401:1C00:2040:418::100 2401:1C00:2040:420::/64 range 22 telnet
+ sequence 303 permit tcp host 2401:1C00:2040:418::100 2401:1C00:2040:430::/64 range 22 telnet
+ sequence 304 permit tcp host 2401:1C00:2040:418::100 2401:1C00:2040:440::/64 range 22 telnet
+ sequence 305 permit tcp host 2401:1C00:2040:418::100 2401:1C00:2040:450::/64 range 22 telnet
+ sequence 306 permit tcp host 2401:1C00:2040:418::100 2401:1C00:2040:460::/64 range 22 telnet
+ sequence 307 permit tcp host 2401:1C00:2040:418::100 2401:1C00:2040:470::/64 range 22 telnet
+ sequence 308 permit tcp host 2401:1C00:2040:418::100 2401:1C00:2040:480::/64 range 22 telnet
+ sequence 310 permit udp any any eq domain
+ permit udp any any eq ntp
+ sequence 325 permit tcp host 2401:1C00:2040:418::42 host 2401:1C00:2040:442::42 eq www
+ sequence 330 deny ipv6 any 2401:1C00:2040:400::/56
+ permit ipv6 any any
+ sequence 370 permit udp any eq snmp host 2401:1C00:2040:442::24
+!
+control-plane
+!
+!
+banner motd ^C
+****************************************************************************************
+
+	This is a Private System. Unauthorised access is strictly prohibited.
+
+
+****************************************************************************************
+^C
+!
+line con 0
+line aux 0
+line 2
+ no activation-character
+ no exec
+ transport preferred none
+ transport output lat pad telnet rlogin lapb-ta mop udptn v120 ssh
+ stopbits 1
+line 0/0/0
+ script dialer hspa-R7
+ no exec
+line 0/0/1
+ no exec
+line vty 0 4
+ privilege level 15
+ password 7 044F1E5F590055185B
+ transport preferred ssh
+ transport input ssh
+line vty 5 15
+ privilege level 15
+ transport input none
+!
+scheduler allocate 20000 1000
+ntp authenticate
+ntp server 192.168.1.6 prefer
+!
+end

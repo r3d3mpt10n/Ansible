@@ -5,3 +5,9 @@
     name: chronyd
     state: restarted
     enabled: yes
+
+- name: Restart zabbix-agent
+  systemd:
+    name: zabbix-agent
+    state: restarted
+    enabled: yes

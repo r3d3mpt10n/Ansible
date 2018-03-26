@@ -1,0 +1,10 @@
+---
+- hosts: Windows
+  tasks:
+       - name: Update Winfail
+         win_updates:
+           log_path: C:\Users\svc-zabbix\updatelog.txt
+           state: installed
+         register: wuout
+
+       - debug: msg "{{ wuout.stdout }}"

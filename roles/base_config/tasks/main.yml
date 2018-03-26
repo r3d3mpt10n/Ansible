@@ -26,6 +26,12 @@
       state: present
       key: "{{ ssh_key }}"
 
+- name: Add SSH key to root user
+  authorized_key:
+      user: root
+      state: present
+      key: "{{ ssh_key }}"
+
 - name: Install Foreman RPM
   yum:
       name: http://{{ foreman_host }}/pub/katello-ca-consumer-latest.noarch.rpm
@@ -41,11 +47,12 @@
       org_id: "{{ foreman_org }}"
       activationkey: "{{ foreman_act_key }}"
       pool_ids:
-              - ff80808160c690520160c8423d240076
-              - ff80808160c690520160c6c77e860066
-              - ff808081617e2e5c0161a72e5f94006f
+              - 2c9e80ee622e562c01622ea46a2b0061
+              - 2c9e80ee622e562c01622e8f5d3a0006
+              - 2c9e80ee622e562c01622e98fedd0046
   when:
-        -  ansible_local.foreman_status != 'Current' 
+        -  ansible_local.foreman_status != 'Current'
+  ignore_errors: yes 
 
 
   tags:
@@ -56,11 +63,23 @@
       name: "{{ item }}"
       state: present
   with_items:
-      - katello-agent
+          #- katello-agent
       - vim
       - bash-completion
       - bind-utils
       - ipa-client
+
+- name: Install Zabbix Repo Locally when Satellite not used
+  yum:
+      name: http://repo.zabbix.com/zabbix/3.4/rhel/7/x86_64/zabbix-release-3.4-2.el7.noarch.rpm
+      state: present   
+  when: ansible_local.foreman_status != 'Current'  
+
+
+- name: Update all packages
+  yum:
+     name: *
+     state: latest
 
 - name: Install Zabbix-agent
   yum:
@@ -68,6 +87,13 @@
       state: present
       disable_gpg_check: yes
   notify: Start Zabbix-agent
+
+- name: Install oVirt Guest Agent when no Satellite available
+  yum:
+      name: http://resources.ovirt.org/pub/yum-repo/ovirt-release42.rpm
+      state: present
+  when: ansible_local.foreman_status != 'Current'
+  tags: ovirt
 
 - name: Install oVirt Guest Agent
   yum: name=ovirt-guest-agent state=present

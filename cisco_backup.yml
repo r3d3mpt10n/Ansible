@@ -1,0 +1,16 @@
+---
+
+- hosts: Network
+  connection: local
+  tasks:
+  - include_vars: cisco_pass
+  - name: Backup Cisco config
+    ios_config:
+            backup: true
+            diff_against: startup
+            provider:
+                    username: "{{ username }}"
+                    authorize: yes
+                    auth_pass: "{{ auth_password }}"
+                    password: "{{ login_password }}"
+

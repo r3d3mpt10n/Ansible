@@ -1,0 +1,10 @@
+---
+
+- hosts: Infra
+  become: True
+  become_method: sudo
+  roles:
+    - zabbix_clients
+  vars_files:
+    - zabbix_clients/vars/main.yml
+    

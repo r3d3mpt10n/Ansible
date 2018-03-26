@@ -1,4 +1,4 @@
-- hosts: all
+- hosts: Windows
   become: yes
   tasks:
   - name: RHEL System upgrade
@@ -10,6 +10,7 @@
        ansible_distribution == 'CentOS'
        or
        ansible_distribution == 'RedHat'
+
   - name: Fedora Update
     dnf:
        name=*
@@ -17,5 +18,9 @@
     when:
        ansible_distribution == 'Fedora'
 
-                    
+  - name: Windows Update
+    win_updates:
+            state: installed
+    when:
+        ansible_distribution == 'Microsoft Windows 10 Home'    
 

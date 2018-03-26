@@ -33,5 +33,5 @@
 - name:
   template:
     src: templates/zabbix_agentd.conf.j2
-    dest: /etc/zabbix/
-
+    dest: /etc/zabbix/zabbix_agentd.conf
+  notify: Restart Zabbix-Agent
