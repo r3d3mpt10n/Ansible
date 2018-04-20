@@ -1,26 +1,39 @@
-- hosts: Windows
-  become: yes
+- hosts: all
   tasks:
-  - name: RHEL System upgrade
-    yum: 
-       update_cache=yes
-       name=*
-       state=latest
-    when:
-       ansible_distribution == 'CentOS'
-       or
-       ansible_distribution == 'RedHat'
+  - block:
+        - name: RHEL System upgrade
+          yum: 
+              update_cache=yes
+              name=*
+              state=latest
+          when:
+              ansible_distribution == 'CentOS'
+              or
+              ansible_distribution == 'RedHat'
 
-  - name: Fedora Update
-    dnf:
-       name=*
-       state=latest
-    when:
-       ansible_distribution == 'Fedora'
+        - name: Fedora Update
+          dnf:
+              name=*
+              state=latest
+          when:
+              ansible_distribution == 'Fedora'
+    become: true
+    become_method: sudo
+    
 
-  - name: Windows Update
-    win_updates:
+  - block:
+        - name: Check available updates
+          win_updates:
+                  state: searched
+          register: update_count
+        
+        - name: List available updates
+          debug: var=update_count
+          
+        - name: Windows Update
+          win_updates:
             state: installed
+          tags: rollout
     when:
         ansible_distribution == 'Microsoft Windows 10 Home'    
 
