@@ -38,8 +38,6 @@
           win_updates:
             state: installed
           register: update_result
-          async: 300
-          poll: 3
           tags: rollout
 
         - name: Reboot if required
