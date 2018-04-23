@@ -1,4 +1,4 @@
-- hosts: all
+- hosts: Home_Devices
   tasks:
   - block:
         - name: RHEL System upgrade
@@ -6,6 +6,8 @@
               update_cache=yes
               name=*
               state=latest
+          async: 300
+          poll: 3
           when:
               ansible_distribution == 'CentOS'
               or
@@ -15,6 +17,8 @@
           dnf:
               name=*
               state=latest
+          async: 300
+          poll: 3
           when:
               ansible_distribution == 'Fedora'
     become: true
@@ -33,7 +37,17 @@
         - name: Windows Update
           win_updates:
             state: installed
+          register: update_result
+          async: 300
+          poll: 3
           tags: rollout
+
+        - name: Reboot if required
+          win_reboot:
+             reboot_timeout: 3600
+             test_command: whoami
+          when: 
+                update_result.reboot_required
     when:
         ansible_distribution == 'Microsoft Windows 10 Home'    
 
