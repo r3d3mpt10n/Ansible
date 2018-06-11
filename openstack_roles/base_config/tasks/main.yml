@@ -48,6 +48,7 @@
       pool_ids:
               - 2c98a78a63ed325b0163ed6141b60006
               - 2c98a78a63ed325b0163ed736acd00fc
+  ignore_errors: yes
   when:
         -  ansible_local.foreman_status != 'Current'   
 
