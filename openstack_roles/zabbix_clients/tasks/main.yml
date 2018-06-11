@@ -7,7 +7,7 @@
     username: admin
     password: "{{ foreman_password }}"
     pool_ids:
-        - ff80808160c690520160c6c77e860066
+        - 2c98a78a63ed325b0163ee5452b30158
   register: satellite_install
   tags:
         - satellite

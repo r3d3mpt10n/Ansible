@@ -1,4 +1,9 @@
 ---
+- name: Add DNS server
+  lineinfile:
+      line: nameserver 172.24.39.253
+      insertafter: '^search'
+      state: present
 
 - name: Add Ansible user
   user:
@@ -32,6 +37,7 @@
       state: present
   tags:
         - satellite
+  when: {{ ansible_hostname }} != foreman.ostack.qld.eng.int
 
 - name: Register with Foreman
   redhat_subscription:
@@ -39,10 +45,10 @@
       org_id: "{{ foreman_org }}"
       activationkey: "{{ foreman_act_key }}"
       pool_ids:
-              - ff80808160c690520160c8423d240076
-              - ff80808160c690520160c6c77e860066
+              - 2c98a78a63ed325b0163ed6141b60006
+              - 2c98a78a63ed325b0163ed736acd00fc
   when:
-        -  ansible_local.foreman_status != 'Current' 
+        -  ansible_local.foreman_status != 'Current' and {{ ansible_hostname }} != foreman.ostack.qld.eng.int 
 
   tags:
         - satellite
