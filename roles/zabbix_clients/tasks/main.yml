@@ -1,32 +1,19 @@
 ---
 
-
-- name: Check Zabbix repo is enabled
-  redhat_subscription:
-    state: present
-    username: admin
-    password: "{{ foreman_password }}"
-    pool_ids:
-        - 2c9e80ee622e562c01622ea46a2b0061
-
-  tags:
-       - satellite
-
-- name: Install local repo if Satellite not used
-  yum:
-    name: http://repo.zabbix.com/zabbix/3.4/rhel/7/x86_64/zabbix-release-3.4-2.el7.noarch.rpm
-    state: present
-
-
 - name: Check zabbix is installed
   yum:
     name: zabbix-agent.x86_64
     state: present
   when: ansible_local.foreman_status != 'Current'
 
-- name:
+- name: Copy zabbix-agent template
   template:
     src: templates/zabbix_agentd.conf.j2
     dest: /etc/zabbix/zabbix_agentd.conf
   notify: Restart zabbix-agent
 
+- name: Add Firewall rules for Zabbix
+  firewalld:
+    port: 10050/tcp
+    permanent: true
+    state: enabled

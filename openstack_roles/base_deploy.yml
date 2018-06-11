@@ -1,6 +1,6 @@
 ---
 
-- hosts: OpenStack
+- hosts: oVirt_Work_VMs
   become: True
   become_method: sudo
   vars_files:

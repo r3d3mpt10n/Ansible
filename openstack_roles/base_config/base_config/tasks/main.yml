@@ -4,9 +4,9 @@
   user:
       name: ansible
       group: wheel
-      system: yes
       update_password: always
       password: "{{ user_password }}"
+      system: yes
       comment: "Ansible Management User"
 
 - name: Ensure Custom fact directory exists
@@ -26,43 +26,35 @@
       state: present
       key: "{{ ssh_key }}"
 
-- name: Add SSH key to root user
-  authorized_key:
-      user: root
-      state: present
-      key: "{{ ssh_key }}"
-
 - name: Install Foreman RPM
   yum:
       name: http://{{ foreman_host }}/pub/katello-ca-consumer-latest.noarch.rpm
       state: present
+  tags:
+        - satellite
+
+- name: Register with Foreman
+  redhat_subscription:
+      state: present
+      org_id: "{{ foreman_org }}"
+      activationkey: "{{ foreman_act_key }}"
+      pool_ids:
+              - ff80808160c690520160c8423d240076
+              - ff80808160c690520160c6c77e860066
+  when:
+        -  ansible_local.foreman_status != 'Current' 
 
   tags:
-       - satellite
+        - satellite
 
 - name: Install Packages
   yum:
       name: "{{ item }}"
       state: present
   with_items:
-          #- katello-agent
       - vim
       - bash-completion
       - bind-utils
-      - ipa-client
-
-- name: Install Zabbix Repo Locally when Satellite not used
-  yum:
-      name: http://repo.zabbix.com/zabbix/3.4/rhel/7/x86_64/zabbix-release-3.4-2.el7.noarch.rpm
-      state: present   
-  when: ansible_local.foreman_status != 'Current'  
-
-
-- name: Update all packages
-  yum:
-     name: '*'
-     state: latest
-     disable_gpg_check: true
 
 - name: Install Zabbix-agent
   yum:
@@ -70,17 +62,12 @@
       state: present
       disable_gpg_check: yes
   notify: Start Zabbix-agent
-
-- name: Install oVirt Guest Agent when no Satellite available
-  yum:
-      name: http://resources.ovirt.org/pub/yum-repo/ovirt-release42.rpm
-      state: present
-  when: ansible_local.foreman_status != 'Current'
-  tags: ovirt
-
+  tags:
+        - satellite
+  
 - name: Install oVirt Guest Agent
   yum: name=ovirt-guest-agent state=present
   notify: Start ovirt-guest-agent
   tags:
-       - ovirt
+        - ovirt
                       

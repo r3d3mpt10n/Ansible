@@ -1,2 +1,38 @@
 ---
 # tasks file for foreman_clients
+
+- name: Install Foreman RPM
+  yum:
+      name: http://{{ foreman_host }}/pub/katello-ca-consumer-latest.noarch.rpm
+      state: present
+  tags:
+       - satellite
+  when: 
+       - ansible_distribution == 'CentOS'
+
+- name: Install Foreman RPM (Fedora)
+  dnf:
+      name: http://{{ foreman_host }}/pub/katello-ca-consumer-latest.noarch.rpm
+      state: latest
+
+  when: ansible_distribution == 'Fedora'
+
+
+- name: Register with Foreman
+  redhat_subscription:
+      state: present
+      org_id: "{{ foreman_org }}"
+      activationkey: "{{ foreman_act_key }}"
+      force_register: true
+      pool_ids:
+              - 2ca880ee63a6588d0163a6a3c5480178
+              - 2ca880ee63a6588d0163a6b3ba1c018c
+              - 2ca880ee63a6588d0163a69e1dfd0001
+  when:
+        -  ansible_local.foreman_status != 'Current'
+  ignore_errors: yes
+  tags:
+       - satellite
+
+
+

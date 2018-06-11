@@ -1,13 +1,14 @@
-- hosts: Home_Devices
+- hosts: Home_Devices Windows
   tasks:
   - block:
         - name: RHEL System upgrade
           yum: 
-              update_cache=yes
-              name=*
-              state=latest
-          async: 300
-          poll: 3
+              update_cache: yes
+              name: '*'
+              state: latest
+              disable_gpg_check: true
+          async: 3600
+          poll: 10
           when:
               ansible_distribution == 'CentOS'
               or
@@ -15,10 +16,10 @@
 
         - name: Fedora Update
           dnf:
-              name=*
-              state=latest
-          async: 300
-          poll: 3
+              name: '*'
+              state: latest
+          async: 3600
+          poll: 10
           when:
               ansible_distribution == 'Fedora'
     become: true
@@ -48,4 +49,5 @@
                 update_result.reboot_required
     when:
         ansible_distribution == 'Microsoft Windows 10 Home'    
+
 

@@ -1,0 +1,35 @@
+[domain/bne-home.net]
+
+id_provider = ipa
+ipa_server = _srv_, {{ domain_controller }}
+ipa_domain = bne-home.net
+ipa_hostname = {{ ansible_fqdn }}
+auth_provider = ipa
+chpass_provider = ipa
+access_provider = ipa
+cache_credentials = True
+ldap_tls_cacert = /etc/ipa/ca.crt
+krb5_store_password_if_offline = True
+[sssd]
+services = nss, pam, ssh, sudo
+
+domains = bne-home.net
+[nss]
+homedir_substring = /home
+
+[pam]
+
+[sudo]
+
+[autofs]
+
+[ssh]
+
+[pac]
+
+[ifp]
+
+[secrets]
+
+[session_recording]
+

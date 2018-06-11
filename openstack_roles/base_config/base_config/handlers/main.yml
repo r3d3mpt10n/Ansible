@@ -1,0 +1,20 @@
+---
+- name: Start Zabbix-agent
+  systemd: 
+      name: zabbix-agent
+      state: started
+      enabled: yes
+  listen: Start Zabbix-agent
+
+- name: Restart Katello-agent
+  systemd: name=katello-agent state=restarted
+  listen: Restart Katello-agent
+
+- name: Start ovirt-guest-agent
+  systemd: name=ovirt-guest-agent state=started enabled=yes
+  listen: Start ovirt-guest-agent
+
+- name: Restart sssd
+  systemd: name=sssd state=restarted
+  listen: Restart sssd
+

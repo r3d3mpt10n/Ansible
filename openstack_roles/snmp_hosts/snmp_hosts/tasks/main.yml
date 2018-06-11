@@ -1,0 +1,13 @@
+---
+
+- name: Check net-snmp is installed
+  yum:
+    name: net-snmp
+    state: present
+
+- name:
+  template:
+    src: templates/snmpd.conf.j2
+    dest: /etc/snmp/snmpd.conf
+  notify: Restart snmpd
+

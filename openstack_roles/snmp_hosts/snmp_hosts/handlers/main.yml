@@ -1,0 +1,7 @@
+---
+
+- name: Restart snmpd
+  systemd:
+      name: snmpd
+      state: restarted
+      enabled: yes

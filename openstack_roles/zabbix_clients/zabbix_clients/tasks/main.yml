@@ -1,0 +1,37 @@
+---
+
+
+- name: Check Zabbix repo is enabled
+  redhat_subscription:
+    state: present
+    username: admin
+    password: "{{ foreman_password }}"
+    pool_ids:
+        - ff80808160c690520160c6c77e860066
+  register: satellite_install
+  tags:
+        - satellite
+
+
+- name: Check zabbix is installed
+  yum:
+    name: zabbix-agent.x86_64
+    state: present
+  ignore_errors: true
+  register: zabbix_install
+  when: satellite_install|succeeded
+
+- name: Install repo if not available
+  yum_repository:
+    name: Zabbix Repo
+    baseurl: https://repo.zabbix.com/zabbix/3.5/rhel/7/x86_64/
+    gpgcheck: no
+    enabled: yes
+    description: Zabbix repo
+  register: zabbix_repo
+
+- name:
+  template:
+    src: templates/zabbix_agentd.conf.j2
+    dest: /etc/zabbix/zabbix_agentd.conf
+  notify: Restart Zabbix-Agent

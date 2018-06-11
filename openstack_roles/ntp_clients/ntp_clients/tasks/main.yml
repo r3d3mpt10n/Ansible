@@ -1,0 +1,12 @@
+---
+
+- name: Check Chrony is installed
+  yum:
+    name: chrony
+    state: present
+
+- name:
+  template:
+    src: templates/chrony.conf.j2
+    dest: /etc/chrony.conf
+
