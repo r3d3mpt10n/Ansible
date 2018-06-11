@@ -3,6 +3,7 @@
 - hosts: cluster_Default
   become: True
   become_method: sudo
+  gather_facts: True
   vars_files:
     - base_config/vars/main.yml
     - snmp_hosts/vars/main.yml
