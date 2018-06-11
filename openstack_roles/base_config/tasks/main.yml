@@ -1,7 +1,7 @@
 ---
 - name: Add DNS server
   lineinfile:
-          path: /etc/resolv.conf
+      path: /etc/resolv.conf
       line: nameserver 172.24.39.253
       insertafter: '^search'
       state: present
