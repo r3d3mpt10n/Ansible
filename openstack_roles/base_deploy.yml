@@ -1,6 +1,6 @@
 ---
 
-- hosts: cluster_Default
+- hosts: status_up
   become: True
   become_method: sudo
   gather_facts: True
