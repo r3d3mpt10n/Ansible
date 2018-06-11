@@ -37,7 +37,7 @@
       state: present
   tags:
         - satellite
-  when: "{{ ansible_hostname }}" != "foreman.ostack.qld.eng.int"
+  
 
 - name: Register with Foreman
   redhat_subscription:
@@ -48,7 +48,7 @@
               - 2c98a78a63ed325b0163ed6141b60006
               - 2c98a78a63ed325b0163ed736acd00fc
   when:
-        -  ansible_local.foreman_status != 'Current' and "{{ ansible_hostname }}" != "foreman.ostack.qld.eng.int" 
+        -  ansible_local.foreman_status != 'Current'   
 
   tags:
         - satellite
