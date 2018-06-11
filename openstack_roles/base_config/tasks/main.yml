@@ -63,14 +63,6 @@
       - bash-completion
       - bind-utils
 
-- name: Install Zabbix-agent
-  yum:
-      name: zabbix-agent
-      state: present
-      disable_gpg_check: yes
-  notify: Start Zabbix-agent
-  tags:
-        - satellite
   
 - name: Install oVirt Guest Agent
   yum: name=ovirt-guest-agent state=present
