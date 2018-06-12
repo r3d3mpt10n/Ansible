@@ -17,6 +17,7 @@
   yum:
     name: zabbix-agent.x86_64
     state: present
+    gpgcheck: no
   ignore_errors: true
   register: zabbix_install
   when: satellite_install is succeeded
