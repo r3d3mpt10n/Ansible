@@ -10,9 +10,7 @@
           async: 3600
           poll: 10
           when:
-              ansible_distribution == 'CentOS'
-              or
-              ansible_distribution == 'RedHat'
+              ansible_os_family == 'RedHat'
 
         - name: Fedora Update
           dnf:
@@ -48,6 +46,6 @@
           when: 
                 update_result.reboot_required
     when:
-        ansible_distribution == 'Microsoft Windows 10 Home'    
+        ansible_os_family == 'Windows'    
 
 
