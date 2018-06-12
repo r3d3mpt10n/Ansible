@@ -1,4 +1,4 @@
-- hosts: Home_Devices Windows
+- hosts: status_up
   tasks:
   - block:
         - name: RHEL System upgrade
